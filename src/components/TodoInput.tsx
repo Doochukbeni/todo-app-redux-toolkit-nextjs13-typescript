@@ -2,30 +2,31 @@
 
 import { useState } from "react";
 import { Button } from "./ui/Button";
-interface TodoInputProps {
-  addTodo: (event: string) => void;
-}
+import { useDispatch } from "react-redux";
+import { createTodo } from "@/redux/features/todoSlice";
 
-const TodoInput = ({ addTodo }: TodoInputProps) => {
+const TodoInput = () => {
   const [value, setValue] = useState("");
   const [loading, setLoading] = useState<boolean>(false);
+
+  const dispatch = useDispatch();
 
   const onSubmit = (e: any) => {
     e.preventDefault();
 
     try {
       setLoading(true);
-      addTodo(value);
-      localStorage.setItem("value", value);
-      console.log(value);
+
+      if (!value) return;
+      dispatch(createTodo(value));
       setValue("");
     } catch (error) {
-      const [value, setValue] = useState("");
       console.log("form submit error:", error);
     } finally {
       setLoading(false);
     }
   };
+  console.log(value);
 
   return (
     <form className="bg-slate-400 flex" onSubmit={onSubmit}>
