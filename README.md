@@ -1,8 +1,25 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+                                               Project Title: Redux To-Do App
+
+Description: This To-Do App is a productivity tool designed to help users organize and manage their tasks and responsibilities efficiently. this app typically allows users to create, filters task, mark task as archived and mark tasks as completed. The primary goal of this To-Do App is to help individuals stay organized, increase productivity, and ensure that important tasks are completed on time.
+
+This todo app was a Nexjs/Reactjs challenge i was asked during one of my interviews. i was able to successfully complete the TodoApp using javascript and setting the local storage without any hydration errors.
+
+This To-Do App was built with NextJS 13.5/ReactJS, Typescript, react-redux, redux-toolkit, localStorage, shadcn UI, Tailwindcss etc.
 
 ## Getting Started
 
-First, run the development server:
+Firstly, you need install the dependencies using the following command:
+
+````bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+# or
+bun install
+
+Secondly, run the development server:
 
 ```bash
 npm run dev
@@ -12,25 +29,139 @@ yarn dev
 pnpm dev
 # or
 bun dev
-```
+````
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## setting up the store
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+import { configureStore } from "@reduxjs/toolkit";
+import { TypedUseSelectorHook, useSelector } from "react-redux";
+import todoReducer from "./features/todoSlice";
 
-## Learn More
+export const store = configureStore({
+reducer: {
+todos: todoReducer,
+},
+});
 
-To learn more about Next.js, take a look at the following resources:
+export type RootState = ReturnType<typeof store.getState>;
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+export type AppDispatch = typeof store.dispatch;
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
-## Deploy on Vercel
+<!-- since this project was built using typescript it is important to set the types on the Rootstate of the store and also the type of AppDispatch -->
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+<!-- the useSelector type need to be set so that typescript will know that it is referring to the rootstate -->
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## setting up the redux slice
+
+import { Todo } from "@/types";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { nanoid } from "nanoid";
+
+<!-- this is a global variable that define the name of this state in the local storage  -->
+
+const LOCAL_STORAGE_KEY = "todos";
+
+interface TodoState {
+todos: Todo[];
+}
+
+<!-- setting this initial state to an empty array of type TodoState helps to define the type of the initialstate -->
+
+const initialState: TodoState = {
+todos: [],
+};
+
+export const todoSlice = createSlice({
+name: "todos",
+initialState,
+reducers: {
+clearTodo: (state) => {
+localStorage.removeItem(LOCAL_STORAGE_KEY);
+return (state = initialState);
+},
+
+    setTodo: (state, action: PayloadAction<Todo[]>) => {
+      state.todos = action.payload;
+    },
+
+    createTodo: (state, action: PayloadAction<string>) => {
+      const newTodo: Todo = {
+        id: nanoid(),
+        text: action.payload,
+        isCompleted: false,
+        isArchived: false,
+      };
+
+      state.todos.push(newTodo);
+
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(state.todos));
+    },
+
+    completeTodo: (state, action: PayloadAction<string>) => {
+      const isCompletedTodo = state.todos.find(
+        (todo) => todo.id === action.payload
+      );
+
+      if (isCompletedTodo) {
+        isCompletedTodo.isCompleted = !isCompletedTodo.isCompleted;
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(state.todos));
+      }
+    },
+
+    deleteTodo: (state, action: PayloadAction<string>) => {
+      state.todos = state.todos.filter((todo) => todo.id !== action.payload);
+
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(state.todos));
+      return state;
+    },
+
+    archiveTodo: (state, action: PayloadAction<string>) => {
+      const todoArchive = state.todos.find(
+        (todo) => todo.id === action.payload
+      );
+      if (todoArchive) {
+        todoArchive.isArchived = !todoArchive.isArchived;
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(state.todos));
+      }
+    },
+
+},
+});
+
+export const {
+clearTodo,
+createTodo,
+completeTodo,
+archiveTodo,
+deleteTodo,
+setTodo,
+} = todoSlice.actions;
+
+export default todoSlice.reducer;
+
+<!-- this function gets the local storage items saved in the local storage on start up and it persist the data on the page if properly handled will prevent hydration errors -->
+
+export const getTodoFromLocalStorage = (): Todo[] => {
+if (typeof localStorage !== "undefined") {
+const storedData = localStorage.getItem(LOCAL_STORAGE_KEY);
+
+    if (storedData) {
+      return JSON.parse(storedData) as Todo[];
+    }
+
+}
+return [];
+};
+
+<!-- to use this function in the components to load data from the local storage is as easy as this. we first check for the length of the items saved in the local storage before retrieving the data from local storage -->
+
+useEffect(() => {
+const todosFromLocalStorage = getTodoFromLocalStorage();
+if (todosFromLocalStorage.length > 0) {
+dispatch(setTodo(todosFromLocalStorage));
+}
+}, [dispatch]);

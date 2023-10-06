@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import TodoInput from "./TodoInput";
 import TodoList from "./TodoList";
 import { AppDispatch, useAppSelector } from "@/redux/store";
-import { Todo } from "@/types";
 import { useDispatch } from "react-redux";
 import { clearTodo, createTodo, setTodo } from "@/redux/features/todoSlice";
 import { getTodoFromLocalStorage } from "@/redux/features/todoSlice";
