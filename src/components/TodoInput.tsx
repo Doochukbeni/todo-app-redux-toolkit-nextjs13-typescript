@@ -2,14 +2,14 @@
 
 import { useState } from "react";
 import { Button } from "./ui/Button";
-import { useDispatch } from "react-redux";
-import { createTodo } from "@/redux/features/todoSlice";
 
-const TodoInput = () => {
+interface TodoInputProps {
+  addTodo: (input: string) => void;
+}
+
+const TodoInput = ({ addTodo }: TodoInputProps) => {
   const [value, setValue] = useState("");
   const [loading, setLoading] = useState<boolean>(false);
-
-  const dispatch = useDispatch();
 
   const onSubmit = (e: any) => {
     e.preventDefault();
@@ -17,16 +17,17 @@ const TodoInput = () => {
     try {
       setLoading(true);
 
-      if (!value) return;
-      dispatch(createTodo(value));
-      setValue("");
+      if (value.trim() !== "") {
+        addTodo(value);
+
+        setValue("");
+      }
     } catch (error) {
       console.log("form submit error:", error);
     } finally {
       setLoading(false);
     }
   };
-  console.log(value);
 
   return (
     <form className="bg-slate-400 flex" onSubmit={onSubmit}>
@@ -38,7 +39,7 @@ const TodoInput = () => {
         placeholder="what do you want to do ?"
         className="text-slate-800 focus:outline-none p-3 border-none h-10 w-full "
       />
-      <Button disabled={loading} className="rounded-none">
+      <Button disabled={loading} className="rounded-none w-max">
         Add
       </Button>
     </form>
