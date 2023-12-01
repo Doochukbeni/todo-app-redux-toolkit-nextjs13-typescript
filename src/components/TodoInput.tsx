@@ -30,7 +30,7 @@ const TodoInput = ({ addTodo }: TodoInputProps) => {
   };
 
   return (
-    <form className="bg-slate-400 flex" onSubmit={onSubmit}>
+    <form className="bg-slate-400 flex mx-2 rounded" onSubmit={onSubmit}>
       <input
         type="text"
         value={value}

@@ -35,9 +35,9 @@ const TodoWrapper = () => {
 
   return (
     <div className="bg-indigo-500 flex flex-col gap-5 w-[800px] h-screen">
-      <div className="p-4">
-        <TodoInput addTodo={addTodo} />
-      </div>
+      <div className="h-52 w-full bg-emerald-500"></div>
+      <TodoInput addTodo={addTodo} />
+
       <TodoList todoItems={todos} />
       <TodoFilters todo={todos} />
 
