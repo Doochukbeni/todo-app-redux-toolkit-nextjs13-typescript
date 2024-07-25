@@ -35,7 +35,7 @@ const TodoWrapper = () => {
 
   return (
     <div className="bg-white flex flex-col gap-5 w-[800px] h-screen">
-      <div className="h-auto w-full bg-gradient-to-r from-slate-200 to-green-300 flex flex-col items-center gap-5 p-5 border-b-2 mb-5">
+      <div className="h-auto w-full bg-gradient-to-r from-slate-200 to-green-300 flex flex-col items-center gap-5 p-5 border-b-2 mb-5 shadow-sm">
         <h1 className="font-bold text-3xl text-slate-900 tracking-tight">
           Todo App{" "}
         </h1>

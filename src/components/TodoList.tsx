@@ -9,7 +9,7 @@ import { Todo } from "@/types";
 import { Trash2 } from "lucide-react";
 import React from "react";
 import { useDispatch } from "react-redux";
-import { ScrollArea } from "./ui/scroll-area";
+import { ScrollArea, ScrollBar } from "./ui/scroll-area";
 
 interface TodoListProps {
   todoItems: Todo[];
@@ -20,7 +20,11 @@ const TodoList = ({ todoItems }: TodoListProps) => {
 
   return (
     <div className="flex flex-col w-full mt- mx-5 ml-0 rounded-md items-center bg-gradient-to-l from-slate-200 to-green-300  justify-between py-4 ">
-      <ScrollArea className="h-[400px] w-full rounded-md border p-2 border-r-2 border-y-0">
+      <ScrollArea className="h-[480px] w-full rounded-md border p-2 border-r-2 border-y-0">
+        <ScrollBar
+          orientation="vertical"
+          className="border-2 bg-zinc-500 h-full w-1"
+        />
         {todoItems.map((item) => (
           <div
             key={item.id}
