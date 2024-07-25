@@ -30,14 +30,14 @@ const TodoInput = ({ addTodo }: TodoInputProps) => {
   };
 
   return (
-    <form className="bg-slate-400 flex mx-2 rounded" onSubmit={onSubmit}>
+    <form className="flex mx-2 rounded" onSubmit={onSubmit}>
       <input
         type="text"
         value={value}
         onChange={(e) => setValue(e.target.value)}
         autoFocus
         placeholder="what do you want to do ?"
-        className="text-slate-800 focus:outline-none p-3 border-none h-10 w-full "
+        className="text-slate-700 focus:outline-none p-5 border-none h-10 w-full bg-slate-200 "
       />
       <Button disabled={loading} className="rounded-none w-max">
         Add

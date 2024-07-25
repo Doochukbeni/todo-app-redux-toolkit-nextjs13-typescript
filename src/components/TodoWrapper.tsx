@@ -34,8 +34,15 @@ const TodoWrapper = () => {
   }, [dispatch]);
 
   return (
-    <div className="bg-indigo-500 flex flex-col gap-5 w-[800px] h-screen">
-      <div className="h-52 w-full bg-emerald-500"></div>
+    <div className="bg-white flex flex-col gap-5 w-[800px] h-screen">
+      <div className="h-auto w-full bg-gradient-to-r from-slate-200 to-green-300 flex flex-col items-center gap-5 p-5 border-b-2 mb-5">
+        <h1 className="font-bold text-3xl text-slate-900 tracking-tight">
+          Todo App{" "}
+        </h1>
+        <p className="text-muted-foreground text-sm ">
+          write down your daily task and track them as well.
+        </p>
+      </div>
       <TodoInput addTodo={addTodo} />
 
       <TodoList todoItems={todos} />
